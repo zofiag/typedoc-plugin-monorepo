@@ -3,7 +3,7 @@
 *.iml
 
 # Built using tsc
-plugin.js 
+# plugin.js
 
 # Logs
 logs
