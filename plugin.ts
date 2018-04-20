@@ -1,13 +1,40 @@
+import * as path from "path";
+import * as fs from "fs";
+import * as marked from "marked";
+
 import { Reflection, ReflectionKind } from "typedoc/dist/lib/models/reflections/abstract";
 import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
 import { Converter } from "typedoc/dist/lib/converter/converter";
 import { Context } from "typedoc/dist/lib/converter/context";
 import { CommentPlugin } from "typedoc/dist/lib/converter/plugins/CommentPlugin";
+import { Comment } from "typedoc/dist/lib/models/comments";
+import { ReflectionKind as ReflectionKindModel } from 'typedoc/dist/lib/models/reflections/index';
 import { ContainerReflection } from "typedoc/dist/lib/models/reflections/container";
 import { getRawComment } from "typedoc/dist/lib/converter/factories/comment";
 import { Options, OptionsReadMode } from "typedoc/dist/lib/utils/options";
 
+// tslint:disable-next-line ban-types
+// ReflectionKind["Package"] = 1337;
+// declare module "typedoc/dist/lib/models/reflections/abstract" {
+//   export enum ReflectionKind {
+//     "Package" = 1337
+//   }
+// }
 
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  highlight: function (code) {
+    return require('highlight.js').highlightAuto(code).value;
+  },
+  pedantic: false,
+  gfm: true,
+  tables: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+});
 /**
  * This plugin allows you to provide a mapping regexp between your source folder structure, and the module that should be
  * reported in typedoc. It will match the first capture group of your regex and use that as the module name.
@@ -24,8 +51,10 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
   private mapRegEx: RegExp ;
   private isMappingEnabled: boolean ;
   private options: Options;
+  private modules: Set<string>;
 
   initialize() {
+    this.modules = new Set();
     this.options = this.application.options;
     this.listenTo(this.owner, {
       [Converter.EVENT_BEGIN]: this.onBegin,
@@ -65,6 +94,7 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
     */
     if (null != match) {
       console.log(' Mapping ', fileName, ' ==> ', match[1]);
+      this.modules.add(match[1]);
       this.moduleRenames.push({
         renameTo: match[1],
         reflection: <ContainerReflection>reflection
@@ -108,7 +138,6 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
         mergeTarget.children.push(<any>ref)
       });
 
-
       // Now that all the children have been relocated to the mergeTarget, delete the empty module
       // Make sure the module being renamed doesn't have children, or they will be deleted
       if (renaming.children)
@@ -116,6 +145,23 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
       CommentPlugin.removeReflection(context.project, renaming);
 
     });
+
+    this.modules.forEach((name: string) => {
+      let ref = refsArray.filter(ref => ref.name === name)[0] as ContainerReflection;
+      let root = ref.originalName.replace(new RegExp(`${name}.*`, 'gi'), name);
+      try {
+        // tslint:disable-next-line ban-types
+        Object.defineProperty(ref, "kindString", {
+          get() { return "Package"; },
+          set(newValue) { return "Package"; },
+        });
+        let readme = fs.readFileSync(path.join(root, 'README.md'));
+        ref.comment = new Comment("", marked(readme.toString()));
+      } catch(e){
+        console.error(`No README found for module "${name}"`);
+      }
+
+    })
   }
 }
 

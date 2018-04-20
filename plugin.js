@@ -20,15 +20,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "typedoc/dist/lib/converter/components", "typedoc/dist/lib/converter/converter", "typedoc/dist/lib/converter/plugins/CommentPlugin", "typedoc/dist/lib/utils/options"], factory);
+        define(["require", "exports", "path", "fs", "marked", "typedoc/dist/lib/converter/components", "typedoc/dist/lib/converter/converter", "typedoc/dist/lib/converter/plugins/CommentPlugin", "typedoc/dist/lib/models/comments", "typedoc/dist/lib/utils/options"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var path = require("path");
+    var fs = require("fs");
+    var marked = require("marked");
     var components_1 = require("typedoc/dist/lib/converter/components");
     var converter_1 = require("typedoc/dist/lib/converter/converter");
     var CommentPlugin_1 = require("typedoc/dist/lib/converter/plugins/CommentPlugin");
+    var comments_1 = require("typedoc/dist/lib/models/comments");
     var options_1 = require("typedoc/dist/lib/utils/options");
+    // tslint:disable-next-line ban-types
+    // ReflectionKind["Package"] = 1337;
+    // declare module "typedoc/dist/lib/models/reflections/abstract" {
+    //   export enum ReflectionKind {
+    //     "Package" = 1337
+    //   }
+    // }
+    marked.setOptions({
+        renderer: new marked.Renderer(),
+        highlight: function (code) {
+            return require('highlight.js').highlightAuto(code).value;
+        },
+        pedantic: false,
+        gfm: true,
+        tables: true,
+        breaks: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false,
+    });
     /**
      * This plugin allows you to provide a mapping regexp between your source folder structure, and the module that should be
      * reported in typedoc. It will match the first capture group of your regex and use that as the module name.
@@ -43,6 +67,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             return _super !== null && _super.apply(this, arguments) || this;
         }
         ExternalModuleMapPlugin.prototype.initialize = function () {
+            this.modules = new Set();
             this.options = this.application.options;
             this.listenTo(this.owner, (_a = {},
                 _a[converter_1.Converter.EVENT_BEGIN] = this.onBegin,
@@ -82,6 +107,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             */
             if (null != match) {
                 console.log(' Mapping ', fileName, ' ==> ', match[1]);
+                this.modules.add(match[1]);
                 this.moduleRenames.push({
                     renameTo: match[1],
                     reflection: reflection
@@ -122,6 +148,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 if (renaming.children)
                     renaming.children.length = 0;
                 CommentPlugin_1.CommentPlugin.removeReflection(context.project, renaming);
+            });
+            this.modules.forEach(function (name) {
+                var ref = refsArray.filter(function (ref) { return ref.name === name; })[0];
+                var root = ref.originalName.replace(new RegExp(name + ".*", 'gi'), name);
+                try {
+                    // tslint:disable-next-line ban-types
+                    Object.defineProperty(ref, "kindString", {
+                        get: function () { return "Package"; },
+                        set: function (newValue) { return "Package"; },
+                    });
+                    var readme = fs.readFileSync(path.join(root, 'README.md'));
+                    ref.comment = new comments_1.Comment("", marked(readme.toString()));
+                }
+                catch (e) {
+                    console.error("No README found for module \"" + name + "\"");
+                }
             });
         };
         ExternalModuleMapPlugin = __decorate([
