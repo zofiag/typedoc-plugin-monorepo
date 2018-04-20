@@ -5,7 +5,11 @@
     "module": "umd",
     "target": "es5",
     "outDir": "./",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "lib": [
+      "es2016",
+      "dom"
+    ]
   },
   "files": [
     "plugin.ts"
