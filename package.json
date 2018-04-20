@@ -1,7 +1,7 @@
 {
-  "name": "typedoc-plugin-external-module-map",
-  "version": "0.0.7",
-  "description": "Specify the Typedoc Module of a file using a regular expression on the filename",
+  "name": "typedoc-plugin-monorepo",
+  "version": "0.1.0",
+  "description": "Display Typescript monorepo documentation.",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -13,9 +13,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/asgerjensen/typedoc-plugin-external-module-map"
+    "url": "https://github.com/amiller-gh/typedoc-plugin-monorepo"
   },
-  "author": "Asger Jensen <asger.jensen@gmail.com>",
+  "author": "Adam Miller <ammiller@linkedin.com>",
   "license": "MIT",
   "peerDependencies": {
     "typedoc": ">=0.8 <1.0"
