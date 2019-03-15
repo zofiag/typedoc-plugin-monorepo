@@ -135,7 +135,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                 CommentPlugin_1.CommentPlugin.removeReflection(context.project, renaming);
             });
             this.modules.forEach((name) => {
-                let ref = refsArray.filter(ref => ref.name === name)[0];
+                let ref = refsArray
+                    .filter(ref => ref.name === name)
+                    .find(ref => ref.originalName[0] === '/');
                 let root = ref.originalName.replace(new RegExp(`${name}.*`, 'gi'), name);
                 try {
                     // tslint:disable-next-line ban-types
