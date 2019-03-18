@@ -1,4 +1,4 @@
-## typedoc-plugin-monorepo
+## @strictsoftware/typedoc-plugin-monorepo
 
 ### What
 
@@ -39,11 +39,11 @@ In addition to grouping these modules, the plugin will attempt to discover READM
 
 ### Installing
 
-Typedoc 0.11 has the ability to discover and load typedoc plugins found in node_modules.
+Typedoc >=0.11 has the ability to discover and load typedoc plugins found in node_modules.
 Simply install the plugin and run typedoc.
 
 ```
-npm install --save typedoc-plugin-monorepo
+npm install --save @strictsoftware/typedoc-plugin-monorepo
 typedoc
 ```
 
