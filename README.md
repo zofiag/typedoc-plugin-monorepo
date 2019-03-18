@@ -8,7 +8,7 @@ When trying to unify documentation for multiple modules residing inside a shared
 
 This plugin allows you to specify a regular expression with a capture group. This is then used to collect related items into one module.
 
-This plugin is inspired by, and based on, [asgerjensen/typedoc-plugin-external-module-map](https://github.com/asgerjensen/typedoc-plugin-external-module-map). However, this plugin will automagically rename top-level modules discovered to a new "Package" type, and auto-discover and display READMEs for the individual packages.
+This plugin is inspired by, and based on, [asgerjensen/typedoc-plugin-external-module-map](https://github.com/asgerjensen/typedoc-plugin-external-module-map). However, this plugin will automagically rename top-level modules discovered to a new "Package" type, and auto-discover and display READMEs for the individual packages. Furthermore, these packages are used as top-level entries in the table of contents.
 
 This plugin is intended for monorepos that deliver more than one NPM package in a single Git repository.
 
