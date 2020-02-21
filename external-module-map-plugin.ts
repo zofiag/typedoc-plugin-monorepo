@@ -144,7 +144,7 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
     this.modules.forEach((name: string) => {
       let ref = refsArray
         .filter(ref => ref.name === name)
-        .find(ref => ref.originalName[0] === '/') as ContainerReflection;
+        .find(ref => path.isAbsolute(ref.originalName)) as ContainerReflection;
       let root = ref.originalName.replace(new RegExp(`${name}.*`, 'gi'), name);
       try {
         // tslint:disable-next-line ban-types
