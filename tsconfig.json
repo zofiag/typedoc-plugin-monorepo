@@ -6,16 +6,9 @@
     "target": "es2015",
     "outDir": "dist",
     "experimentalDecorators": true,
-    "lib": [
-      "es2016",
-      "dom"
-    ]
+    "lib": ["es2016"],
+    "esModuleInterop": true
   },
-  "files": [
-    "external-module-map-plugin.ts",
-    "toc-modules-plugin.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "files": ["external-module-map-plugin.ts", "toc-modules-plugin.ts"],
+  "exclude": ["node_modules"]
 }
