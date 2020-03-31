@@ -22,11 +22,9 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "highlight.js": "^9.15.6",
-    "marked": "^0.8.0"
+    "highlight.js": "^9.15.6"
   },
   "devDependencies": {
-    "@types/marked": "^0.7.3",
     "@types/node": "^13.9.8",
     "typedoc": "^0.17.3",
     "typescript": "^3.8.3"
