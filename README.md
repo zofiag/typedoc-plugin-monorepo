@@ -65,7 +65,6 @@ It is probably easier to create a typedoc options file (typedoc.json) and add it
   "name": "My Library",
   "out": "doc",
   "theme": "default",
-  "ignoreCompilerErrors": "false",
   "preserveConstEnums": "true",
   "exclude": "*.spec.ts",
   "external-modulemap": ".*packages\/(@namespace\/[^\/]+)\/.*",
