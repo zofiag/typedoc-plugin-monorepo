@@ -13,6 +13,7 @@ This plugin is inspired by, and based on, [asgerjensen/typedoc-plugin-external-m
 This plugin is intended for monorepos that deliver more than one NPM package in a single Git repository.
 
 Suppose you have
+
 ```
 packages/@namespace/package-1/index.ts
 packages/@namespace/package-1/src/otherfiles.ts
@@ -20,14 +21,14 @@ packages/@namespace/package-2/index.ts
 packages/@namespace/package-2/src/otherfiles.ts
 ```
 
-Typedoc will create four "External Modules", named for each .ts file.
+Typedoc will create four "Modules", named for each .ts file.
 
 - "@namespace/package-1/index"
 - "@namespace/package-1/src/otherfiles"
 - "@namespace/package-2/index"
 - "@namespace/package-2/src/otherfiles"
 
-This plugin allows each file to specify the Typedoc External Module its code should belong to. If multiple files belong to the same module, they are merged.
+This plugin allows each file to specify the Typedoc Module its code should belong to. If multiple files belong to the same module, they are merged.
 
 This allows more control over the modules that Typedoc generates.
 Instead of the four modules above, we could group them into two:
@@ -50,6 +51,7 @@ typedoc
 ### Using
 
 This plugin adds a new input option
+
 ```
 --external-modulemap  ".*packages\/(@namespace\/[^\/]+)\/.*"
 ```
@@ -61,14 +63,12 @@ It is probably easier to create a typedoc options file (typedoc.json) and add it
 ```
 {
   "name": "My Library",
-  "mode": "modules",
   "out": "doc",
   "theme": "default",
   "ignoreCompilerErrors": "false",
   "preserveConstEnums": "true",
   "exclude": "*.spec.ts",
   "external-modulemap": ".*packages\/(@namespace\/[^\/]+)\/.*",
-  "stripInternal": "false"
+  "excludeExternals": false
 }
 ```
-

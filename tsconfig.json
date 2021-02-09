@@ -7,8 +7,14 @@
     "outDir": "dist",
     "experimentalDecorators": true,
     "lib": ["es2016"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": true
   },
-  "files": ["external-module-map-plugin.ts", "toc-modules-plugin.ts"],
+  "files": [
+    "index.ts",
+    "external-module-map-plugin.ts",
+    "find-readme.ts",
+    "toc-modules-plugin.ts"
+  ],
   "exclude": ["node_modules"]
 }
