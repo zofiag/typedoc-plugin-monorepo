@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs";
 import * as ts from "typescript";
 
 import {
@@ -10,7 +8,7 @@ import { Converter } from "typedoc/dist/lib/converter/converter";
 import { Context } from "typedoc/dist/lib/converter/context";
 import { Comment } from "typedoc/dist/lib/models/comments";
 import { Options } from "typedoc/dist/lib/utils/options";
-import { DeclarationReflection } from "typedoc";
+import { DeclarationReflection, ReflectionKind } from "typedoc";
 import { findReadme } from "./find-readme";
 
 interface ModuleRename {
@@ -133,8 +131,9 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
     }
 
     for (const moduleName of this.modules) {
-      const reflection = context.project.findReflectionByName(moduleName);
-
+      const reflection = context.project
+        .getReflectionsByKind(ReflectionKind.Module)
+        .find((ref) => ref.name === moduleName);
       if (!reflection) {
         continue;
       }
