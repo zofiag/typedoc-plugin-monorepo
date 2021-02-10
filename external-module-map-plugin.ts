@@ -131,19 +131,20 @@ export class ExternalModuleMapPlugin extends ConverterComponent {
     }
 
     for (const moduleName of this.modules) {
-      const reflection = context.project
+      const moduleReflection = context.project
         .getReflectionsByKind(ReflectionKind.Module)
         .find((ref) => ref.name === moduleName);
-      if (!reflection) {
+
+      if (!moduleReflection) {
         continue;
       }
 
-      reflection.kindString = "Package";
+      moduleReflection.kindString = "Package";
 
-      const readme = findReadme(reflection);
+      const readme = findReadme(moduleReflection);
 
       if (readme) {
-        reflection.comment = new Comment("", readme.toString());
+        moduleReflection.comment = new Comment("", readme.toString());
       } else {
         console.error(`No README found for module "${moduleName}"`);
       }
